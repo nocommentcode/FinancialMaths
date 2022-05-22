@@ -5,10 +5,10 @@ from Options.FinancialOption import FinancialOption
 
 
 def price_option_via_MC(option, t, St, r, mu):
-    call_pricer = MCCallOptionPricer(mu, 1000, 0.01)
+    call_pricer = MCCallOptionPricer(mu, 20000, 0.01)
     call_price = call_pricer.price(t, St, r, option)
 
-    put_pricer = MCPutOptionPricer(mu, 1000, 0.01)
+    put_pricer = MCPutOptionPricer(mu, 20000, 0.01)
     put_price = put_pricer.price(t, St, r, option)
 
     return call_price, put_price

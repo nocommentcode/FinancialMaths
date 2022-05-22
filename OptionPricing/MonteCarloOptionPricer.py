@@ -20,10 +20,10 @@ class MonteCarloOptionPricer(OptionPricer):
         self.n = n
         self.dt = dt
 
-    def get_option_payoff(self, option, stock_price):
+    def get_option_payoff(self, K, stock_price):
         """
         Returns the option payoff
-        :param option: the option
+        :param K: the strike prices
         :param stock_price: the final stock price
         :return: payoff
         """
@@ -33,24 +33,25 @@ class MonteCarloOptionPricer(OptionPricer):
         T, K, sigma = option.get_params()
         gbm = GBM(self.mu, sigma, St)
         stock_price = gbm.generate_paths(self.n, T-t, self.dt)
-        final_stock_price = stock_price[-1, :].mean()
-        print(final_stock_price)
-        option_price = self.get_option_payoff(option, final_stock_price)
-        return option_price
+        Sts = stock_price[-1, :]
+        Ks = np.repeat(option.K[..., np.newaxis],Sts.size, axis=1)
+        Sts = np.repeat(Sts[np.newaxis, ...], option.K.size, axis=0)
+        payoffs = self.get_option_payoff(Ks, Sts).mean(axis=1)
+        return payoffs
 
 
 class MCCallOptionPricer(MonteCarloOptionPricer):
-    def get_option_payoff(self, option, stock_price):
-        return np.maximum(stock_price - option.K, 0)
+    def get_option_payoff(self, K, stock_price):
+        return np.maximum(stock_price - K, 0)
 
 
 class MCPutOptionPricer(MonteCarloOptionPricer):
-    def get_option_payoff(self, option, stock_price):
-        return np.maximum(option.K - stock_price, 0)
+    def get_option_payoff(self, K, stock_price):
+        return np.maximum(K - stock_price, 0)
 
 
 if __name__ == "__main__":
-    T = 3
+    T = 15
     t = 0
     St = 300
     r = 0.03
