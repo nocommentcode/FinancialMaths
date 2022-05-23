@@ -44,6 +44,32 @@ class FinancialOption:
         plt.show()
 
 
+class CallOption(FinancialOption):
+    def __init__(self, T, K, sigma):
+        super().__init__(T, K, sigma)
+
+    def get_option_payoff(self, stock_price):
+        if type(stock_price) == float or type(self.K) == float:
+            return np.maximum(stock_price - self.K, 0)
+        else:
+            Ks = np.repeat(self.K[..., np.newaxis], stock_price.size, axis=1)
+            Sts = np.repeat(stock_price[np.newaxis, ...], self.K.size, axis=0)
+            return np.maximum(Sts - Ks, 0)
+
+
+class PutOption(FinancialOption):
+    def __init__(self, T, K, sigma):
+        super().__init__(T, K, sigma)
+
+    def get_option_payoff(self, stock_price):
+        if type(stock_price) == float or type(self.K) == float:
+            return np.maximum(self.K - stock_price, 0)
+        else:
+            Ks = np.repeat(self.K[..., np.newaxis], stock_price.size, axis=1)
+            Sts = np.repeat(stock_price[np.newaxis, ...], self.K.size, axis=0)
+            return np.maximum(Ks - Sts, 0)
+
+
 if __name__ == "__main__":
     T = 1
     t = 0

@@ -1,15 +1,16 @@
 import numpy as np
 from OptionPricing.BSOptionPricer import BSCallOptionPricer, BSPutOptionPricer
-from OptionPricing.MonteCarloOptionPricer import MCCallOptionPricer, MCPutOptionPricer
-from Options.FinancialOption import FinancialOption
+from OptionPricing.MonteCarloOptionPricer import MonteCarloOptionPricer
+from Options.FinancialOption import FinancialOption, CallOption, PutOption
 
 
 def price_option_via_MC(option, t, St, r, mu):
-    call_pricer = MCCallOptionPricer(mu, 20000, 0.01)
-    call_price = call_pricer.price(t, St, r, option)
+    callOption = CallOption(T, K, sigma)
+    putOption = PutOption(T, K, sigma)
 
-    put_pricer = MCPutOptionPricer(mu, 20000, 0.01)
-    put_price = put_pricer.price(t, St, r, option)
+    pricer = MonteCarloOptionPricer(mu, 1000, 0.01)
+    call_price = pricer.price(t, St, r, callOption)
+    put_price = pricer.price(t, St, r, putOption)
 
     return call_price, put_price
 
